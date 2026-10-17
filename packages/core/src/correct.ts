@@ -212,24 +212,31 @@ export function correctLines(
     for (let i = 0; i < d.length; i++) classes[d.line]![d.start + i] = d.cls;
   const classAt = (p: Pos) => classes[p[0]]![p[1]]!;
 
-  // 1. Filler: in a name field, nothing but fillers may follow a run of 3+ fillers.
-  const nameDef = fieldDef(layout, 'name')!;
-  const name = readField(lines(), nameDef);
-  const run = name.indexOf('<<<');
-  if (run >= 0) {
+  // 1. Filler. OCR often reads `<` as `K`; K (20) and < (0) are equal modulo 10, so check
+  //    digits cannot catch it. In a name, nothing but fillers may follow a run of 3+ fillers;
+  //    in other alphanumeric fields, nothing but fillers may follow a run of 2+ fillers.
+  for (const d of layout.fields) {
+    if (d.cls !== 'alnum' && d.name !== 'name') continue;
+    const value = readField(lines(), d);
+    const fillers = value.replace(/[^<]/g, '').length;
+    // A field starting with a filler and holding only fillers and stray Ks is empty.
+    const allFiller =
+      d.name !== 'name' && /^<[<K]*$/.test(value) && fillers > value.length - fillers;
+    const run = allFiller ? 0 : value.indexOf(d.name === 'name' ? '<<<' : '<<');
+    if (run < 0) continue;
+    const tail = value.slice(run);
+    if (!/^[<KXCE]*$/.test(tail) || (d.name !== 'name' && !/^[<K]*$/.test(tail))) continue;
     const changes: CharChange[] = [];
-    for (let i = run; i < name.length; i++) {
-      if (name[i] !== '<' && /[KXCE]/.test(name[i]!)) {
-        changes.push({ line: nameDef.line, position: nameDef.start + i, from: name[i]!, to: '<' });
-      }
+    for (let i = run; i < value.length; i++) {
+      if (value[i] !== '<')
+        changes.push({ line: d.line, position: d.start + i, from: value[i]!, to: '<' });
     }
-    const tail = name.slice(run).replace(/</g, '');
-    if (changes.length && changes.length === tail.length) commit(changes, 'filler');
+    commit(changes, 'filler');
   }
 
   // 2. Character-class repairs (letters in digit fields, digits in letter fields).
   for (const d of layout.fields) {
-    if (d.name === 'sex' || d.name === 'documentCode') continue;
+    if (d.name === 'sex') continue;
     const value = readField(lines(), d);
     if (d.name === 'issuingState' || d.name === 'nationality') {
       if (!/[0-9]/.test(value)) continue;
