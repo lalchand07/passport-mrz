@@ -1,0 +1,38 @@
+name: Doc 9303 verification
+description: Confirm or correct a format detail against the official ICAO Doc 9303 text
+labels: [spec-verification]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you! Please cite the source; do not attach or paste large excerpts of ICAO documents.
+  - type: dropdown
+    id: item
+    attributes:
+      label: Item from docs/FORMAT_NOTES.md
+      options:
+        - Field offsets / lengths
+        - Composite check digit fields
+        - TD1 / TD2 long document number rule
+        - Check digit on all-filler fields
+        - Sex codes
+        - Document codes
+        - Name rules / truncation
+        - Special nationality codes
+        - Unknown date parts
+        - Specimen MRZs
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: citation
+    attributes:
+      label: Citation (Doc 9303 part, section, edition)
+    validations:
+      required: true
+  - type: textarea
+    id: finding
+    attributes:
+      label: What the official text says, and whether the implementation matches
+    validations:
+      required: true
