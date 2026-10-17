@@ -19,68 +19,68 @@ Positions below are 0-based, `[start, end)`.
 
 ## TD3 — passports (2 × 44)
 
-| Line | Pos | Len | Field |
-| --- | --- | --- | --- |
-| 1 | 0 | 2 | Document code (`P` + type or `<`) |
-| 1 | 2 | 3 | Issuing state |
-| 1 | 5 | 39 | Name |
-| 2 | 0 | 9 | Document number |
-| 2 | 9 | 1 | Check digit (document number) |
-| 2 | 10 | 3 | Nationality |
-| 2 | 13 | 6 | Date of birth YYMMDD |
-| 2 | 19 | 1 | Check digit (birth) |
-| 2 | 20 | 1 | Sex |
-| 2 | 21 | 6 | Expiry YYMMDD |
-| 2 | 27 | 1 | Check digit (expiry) |
-| 2 | 28 | 14 | Personal number / optional data |
-| 2 | 42 | 1 | Check digit (personal number; may be `<` when the field is all filler) |
-| 2 | 43 | 1 | Composite check digit |
+| Line | Pos | Len | Field                                                                  |
+| ---- | --- | --- | ---------------------------------------------------------------------- |
+| 1    | 0   | 2   | Document code (`P` + type or `<`)                                      |
+| 1    | 2   | 3   | Issuing state                                                          |
+| 1    | 5   | 39  | Name                                                                   |
+| 2    | 0   | 9   | Document number                                                        |
+| 2    | 9   | 1   | Check digit (document number)                                          |
+| 2    | 10  | 3   | Nationality                                                            |
+| 2    | 13  | 6   | Date of birth YYMMDD                                                   |
+| 2    | 19  | 1   | Check digit (birth)                                                    |
+| 2    | 20  | 1   | Sex                                                                    |
+| 2    | 21  | 6   | Expiry YYMMDD                                                          |
+| 2    | 27  | 1   | Check digit (expiry)                                                   |
+| 2    | 28  | 14  | Personal number / optional data                                        |
+| 2    | 42  | 1   | Check digit (personal number; may be `<` when the field is all filler) |
+| 2    | 43  | 1   | Composite check digit                                                  |
 
 Composite covers line 2 `[0,10) + [13,20) + [21,43)`.
 
 ## TD1 — ID cards (3 × 30)
 
-| Line | Pos | Len | Field |
-| --- | --- | --- | --- |
-| 1 | 0 | 2 | Document code (`I`, `A`, `C` + type) |
-| 1 | 2 | 3 | Issuing state |
-| 1 | 5 | 9 | Document number |
-| 1 | 14 | 1 | Check digit (document number) |
-| 1 | 15 | 15 | Optional data 1 |
-| 2 | 0 | 6 | Date of birth |
-| 2 | 6 | 1 | Check digit (birth) |
-| 2 | 7 | 1 | Sex |
-| 2 | 8 | 6 | Expiry |
-| 2 | 14 | 1 | Check digit (expiry) |
-| 2 | 15 | 3 | Nationality |
-| 2 | 18 | 11 | Optional data 2 |
-| 2 | 29 | 1 | Composite check digit |
-| 3 | 0 | 30 | Name |
+| Line | Pos | Len | Field                                |
+| ---- | --- | --- | ------------------------------------ |
+| 1    | 0   | 2   | Document code (`I`, `A`, `C` + type) |
+| 1    | 2   | 3   | Issuing state                        |
+| 1    | 5   | 9   | Document number                      |
+| 1    | 14  | 1   | Check digit (document number)        |
+| 1    | 15  | 15  | Optional data 1                      |
+| 2    | 0   | 6   | Date of birth                        |
+| 2    | 6   | 1   | Check digit (birth)                  |
+| 2    | 7   | 1   | Sex                                  |
+| 2    | 8   | 6   | Expiry                               |
+| 2    | 14  | 1   | Check digit (expiry)                 |
+| 2    | 15  | 3   | Nationality                          |
+| 2    | 18  | 11  | Optional data 2                      |
+| 2    | 29  | 1   | Composite check digit                |
+| 3    | 0   | 30  | Name                                 |
 
 Composite covers line 1 `[5,30)` + line 2 `[0,7) + [8,15) + [18,29)`.
 
 **Long document number rule:** when the document number is longer than 9 characters,
 the first 9 go in line 1 `[5,14)`, position 14 is `<`, and the remaining characters
-followed by the check digit of the *full* number are placed at the start of optional
+followed by the check digit of the _full_ number are placed at the start of optional
 data 1, terminated by `<`.
 
 ## TD2 — ID cards / official travel documents (2 × 36)
 
-| Line | Pos | Len | Field |
-| --- | --- | --- | --- |
-| 1 | 0 | 2 | Document code |
-| 1 | 2 | 3 | Issuing state |
-| 1 | 5 | 31 | Name |
-| 2 | 0 | 9 | Document number |
-| 2 | 9 | 1 | Check digit (document number) |
-| 2 | 10 | 3 | Nationality |
-| 2 | 13 | 6 | Date of birth |
-| 2 | 19 | 1 | Check digit (birth) |
-| 2 | 20 | 1 | Sex |
-| 2 | 21 | 6 | Expiry |
-| 2 | 27 | 1 | Check digit (expiry) |
-| 2 | 28 | 7 | Optional data |
-| 2 | 35 | 1 | Composite check digit |
+| Line | Pos | Len | Field                         |
+| ---- | --- | --- | ----------------------------- |
+| 1    | 0   | 2   | Document code                 |
+| 1    | 2   | 3   | Issuing state                 |
+| 1    | 5   | 31  | Name                          |
+| 2    | 0   | 9   | Document number               |
+| 2    | 9   | 1   | Check digit (document number) |
+| 2    | 10  | 3   | Nationality                   |
+| 2    | 13  | 6   | Date of birth                 |
+| 2    | 19  | 1   | Check digit (birth)           |
+| 2    | 20  | 1   | Sex                           |
+| 2    | 21  | 6   | Expiry                        |
+| 2    | 27  | 1   | Check digit (expiry)          |
+| 2    | 28  | 7   | Optional data                 |
+| 2    | 35  | 1   | Composite check digit         |
 
 Composite covers line 2 `[0,10) + [13,20) + [21,35)`. The long document number rule is
 assumed to apply as in TD1, with the overflow at the start of the optional data.
@@ -90,13 +90,13 @@ assumed to apply as in TD1, with the overflow at the start of the optional data.
 Same as TD3 / TD2 line 2 up to position 28, with no composite check digit and no
 personal-number check digit:
 
-| Line | Pos | Len | Field |
-| --- | --- | --- | --- |
-| 1 | 0 | 2 | Document code (`V` + type) |
-| 1 | 2 | 3 | Issuing state |
-| 1 | 5 | 39 / 31 | Name |
-| 2 | 0–27 | | as TD3 |
-| 2 | 28 | 16 / 8 | Optional data |
+| Line | Pos  | Len     | Field                      |
+| ---- | ---- | ------- | -------------------------- |
+| 1    | 0    | 2       | Document code (`V` + type) |
+| 1    | 2    | 3       | Issuing state              |
+| 1    | 5    | 39 / 31 | Name                       |
+| 2    | 0–27 |         | as TD3                     |
+| 2    | 28   | 16 / 8  | Optional data              |
 
 ## Names
 

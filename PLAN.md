@@ -88,9 +88,11 @@ character class: `digit` (dates, check digits), `alpha` (country codes, sex, nam
    - more than one → try to break the tie with the composite check digit (only one
      combination making the composite valid → accept); otherwise **ambiguous**: no change,
      report the candidates.
-3. Every accepted change is reported as
+3. **Length repair** — a line 1–2 characters too long (or 1 too short) is repaired by trying
+   every deletion/insertion and keeping the unique candidate that passes the most checks.
+4. Every accepted change is reported as
    `{ field, position, original, corrected, reason }`. Corrections are never silent.
-4. Corrected outputs always pass every check digit they claim to fix (property-tested).
+5. Corrected outputs always pass every check digit they claim to fix (property-tested).
 
 ## Travel checks (`passport-mrz/travel`)
 
@@ -111,7 +113,9 @@ character class: `digit` (dates, check digits), `alpha` (country codes, sex, nam
    part of the page for 2–3 evenly spaced, wide, high-density text bands.
 4. Crop with margin, **deskew lightly** (try angles −5°…+5°, keep the one maximizing
    row-profile variance), Otsu threshold.
-5. OCR with tesseract.js (`eng` model, whitelist `A-Z0-9<`, single-block mode).
+5. OCR with tesseract.js (`eng` model, whitelist `A-Z0-9<`, single-block mode): legacy engine
+   first, LSTM as fallback (the legacy engine read monospaced MRZ text best in testing), then
+   one confirmation read to catch errors that check digits cannot see.
 6. Parse with `passport-mrz` (correction on). Report OCR confidence per line and which
    lines were corrected.
 
@@ -120,13 +124,13 @@ sets `workerPath`, `corePath` and `langPath` explicitly so tesseract.js never hi
 
 ## Licenses
 
-| Item | Source | License |
-| --- | --- | --- |
-| Library code | this repo | MIT |
-| Country names | `i18n-iso-countries` (English), generated at dev time | MIT |
-| ICAO special codes | hand-written from general knowledge of Doc 9303 | MIT (facts) |
-| OCR model | `eng.traineddata` via `@tesseract.js-data/eng` (from tesseract-ocr tessdata) | Apache-2.0 |
-| OCR engine | `tesseract.js`, `tesseract.js-core` | Apache-2.0 |
+| Item               | Source                                                                       | License     |
+| ------------------ | ---------------------------------------------------------------------------- | ----------- |
+| Library code       | this repo                                                                    | MIT         |
+| Country names      | `i18n-iso-countries` (English), generated at dev time                        | MIT         |
+| ICAO special codes | hand-written from general knowledge of Doc 9303                              | MIT (facts) |
+| OCR model          | `eng.traineddata` via `@tesseract.js-data/eng` (from tesseract-ocr tessdata) | Apache-2.0  |
+| OCR engine         | `tesseract.js`, `tesseract.js-core`                                          | Apache-2.0  |
 
 MRZ-specific models (e.g. `tessdata_ocrb`, `tesseractMRZ`) were considered; their
 licenses could not be verified from this environment, so the standard English model is
