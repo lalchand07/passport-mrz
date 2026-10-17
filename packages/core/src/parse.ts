@@ -3,6 +3,7 @@ import { lookupCountry } from './countries.js';
 import { correctLines, checkPasses, resolveCheck } from './correct.js';
 import { parseMrzDate, toSimpleDate, compareDates, type SimpleDate } from './dates.js';
 import { fieldDef, readField, type Layout } from './formats.js';
+import { repairLineLengths } from './length.js';
 import { parseName } from './names.js';
 import { detectFormat, normalizeMrz } from './normalize.js';
 import type {
@@ -132,7 +133,25 @@ function parseUnsafe(input: string | readonly string[], options: ParseOptions): 
   const errors = [...detection.errors];
   if (!detection.layout) return failure(errors, detection.lines, warnings);
   const layout = detection.layout;
-  const inputLines = detection.lines;
+  let inputLines = detection.lines;
+  if (options.correct !== false && detection.rawLines.some((l) => l.length !== layout.lineLength)) {
+    const repaired = repairLineLengths(
+      detection.rawLines,
+      detection.lines,
+      layout,
+      options.maxSubstitutions ?? 2,
+    );
+    if (repaired.warnings.length) {
+      inputLines = repaired.lines;
+      warnings.push(...repaired.warnings);
+      // The repair supersedes the plain length errors for the repaired lines.
+      const fixed = new Set(repaired.repaired.map((i) => `line${i + 1}`));
+      for (let i = errors.length - 1; i >= 0; i--) {
+        if (errors[i]!.code === 'line_length' && fixed.has(errors[i]!.field ?? ''))
+          errors.splice(i, 1);
+      }
+    }
+  }
 
   // Characters outside the MRZ alphabet.
   inputLines.forEach((l, i) => {

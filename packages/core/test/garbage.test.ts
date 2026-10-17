@@ -88,6 +88,23 @@ describe('messy but recoverable input', () => {
     expect(r.warnings.map((w) => w.code)).toContain('extra_text_ignored');
   });
 
+  it('a too-long trailing filler run read as K and L (TD1)', () => {
+    const r = parseMrz(['I<UTOD231458907<<<<<<<<<<<<<LKLL', ...SPECIMENS.td1.slice(1)], {
+      referenceDate: REF,
+    });
+    expect(r.valid).toBe(true);
+    expect(r.lines[0]).toBe(SPECIMENS.td1[0]);
+  });
+
+  it('a trailing filler run read as K and L', () => {
+    const r = parseMrz(['P<UTOERIKSSON<<ANNA<MARIA<<<<KLKLLLLLLLKLLLLK', SPECIMENS.td3[1]], {
+      referenceDate: REF,
+    });
+    expect(r.valid).toBe(true);
+    expect(r.lines[0]).toBe(SPECIMENS.td3[0]);
+    expect(r.corrections[0]).toMatchObject({ field: 'name', reason: 'filler' });
+  });
+
   it('a line missing a trailing filler is padded', () => {
     const r = parseMrz([SPECIMENS.td3[0].slice(0, 42), SPECIMENS.td3[1]], { referenceDate: REF });
     expect(r.valid).toBe(true);
@@ -102,8 +119,45 @@ describe('messy but recoverable input', () => {
     expect(r.format).toBe('TD1');
   });
 
+  it('an inserted character is removed where the check digits say (TD3 line 2)', () => {
+    const line = SPECIMENS.td3[1].slice(0, 5) + 'I' + SPECIMENS.td3[1].slice(5);
+    const r = parseMrz([SPECIMENS.td3[0], line], { referenceDate: REF });
+    expect(r.valid).toBe(true);
+    expect(r.lines).toEqual([...SPECIMENS.td3]);
+    expect(r.warnings.map((w) => w.code)).toContain('line_length_repaired');
+  });
+
+  it('an inserted character in a TD1 document number is removed', () => {
+    const line = 'I<UTOD2314858907<<<<<<<<<<<<<<<'; // extra 8 inside the number, still ends with <
+    const r = parseMrz([line, SPECIMENS.td1[1], SPECIMENS.td1[2]], { referenceDate: REF });
+    expect(r.valid).toBe(true);
+    expect(r.fields.documentNumber).toBe('D23145890');
+  });
+
+  it('two inserted characters are removed', () => {
+    const l = SPECIMENS.td3[1];
+    const line = l.slice(0, 14) + '1' + l.slice(14, 22) + 'N' + l.slice(22);
+    const r = parseMrz([SPECIMENS.td3[0], line], { referenceDate: REF });
+    expect(r.valid).toBe(true);
+    expect(r.fields.birthDate).toBe('1974-08-12');
+  });
+
+  it('a dropped character is restored when the check digits agree', () => {
+    const l = SPECIMENS.td3[1];
+    const line = l.slice(0, 15) + l.slice(16); // drop a birth date digit
+    const r = parseMrz([SPECIMENS.td3[0], line], { referenceDate: REF });
+    expect(r.valid).toBe(true);
+    expect(r.lines[1]).toBe(l);
+  });
+
+  it('length repair is skipped with correct: false', () => {
+    const line = SPECIMENS.td3[1].slice(0, 5) + 'I' + SPECIMENS.td3[1].slice(5);
+    const r = parseMrz([SPECIMENS.td3[0], line], { referenceDate: REF, correct: false });
+    expect(r.valid).toBe(false);
+  });
+
   it('a too-long line without trailing fillers is an error', () => {
-    const r = parseMrz([SPECIMENS.td3[0], SPECIMENS.td3[1] + 'AB'], { referenceDate: REF });
+    const r = parseMrz([SPECIMENS.td3[0], SPECIMENS.td3[1] + 'ABC'], { referenceDate: REF });
     expect(codes(r)).toContain('line_length');
   });
 

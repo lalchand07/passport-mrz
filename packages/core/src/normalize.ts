@@ -73,6 +73,8 @@ export interface Detection {
   format: MrzFormat | null;
   layout: Layout | null;
   lines: string[];
+  /** Lines before any length adjustment. */
+  rawLines: string[];
   warnings: Issue[];
   errors: Issue[];
 }
@@ -96,21 +98,32 @@ export function detectFormat(lines: readonly string[]): Detection {
         lines.map((l) => l.length).join(', ') || 0
       }. Expected 3×30 (TD1), 2×36 (TD2/MRV-B) or 2×44 (TD3/MRV-A).`,
     });
-    return { format: null, layout: null, lines: [...lines], warnings, errors };
+    return {
+      format: null,
+      layout: null,
+      lines: [...lines],
+      rawLines: [...lines],
+      warnings,
+      errors,
+    };
   }
 
   const layout = LAYOUTS[format];
   const fixed = lines.map((l, i) => {
     if (l.length === layout.lineLength) return l;
+    // Too long: drop characters from a trailing filler run (OCR may read fillers as K or L).
+    const excess = l.length - layout.lineLength;
+    const run = /<<[<KL]*$/.exec(l);
     const adjusted =
-      l.length > layout.lineLength
-        ? l.replace(/<+$/, (m) =>
-            m.slice(0, Math.max(0, m.length - (l.length - layout.lineLength))),
-          )
+      excess > 0
+        ? run && run[0].length - 2 >= excess
+          ? l.slice(0, layout.lineLength)
+          : l
         : l.padEnd(layout.lineLength, '<');
     if (adjusted.length !== layout.lineLength) {
       errors.push({
         code: 'line_length',
+        field: `line${i + 1}`,
         message: `Line ${i + 1} has ${l.length} characters; ${format} lines have ${layout.lineLength}.`,
       });
       return adjusted.slice(0, layout.lineLength).padEnd(layout.lineLength, '<');
@@ -123,5 +136,5 @@ export function detectFormat(lines: readonly string[]): Detection {
     });
     return adjusted;
   });
-  return { format, layout, lines: fixed, warnings, errors };
+  return { format, layout, lines: fixed, rawLines: [...lines], warnings, errors };
 }

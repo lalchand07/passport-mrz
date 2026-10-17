@@ -221,11 +221,11 @@ export function correctLines(
     const fillers = value.replace(/[^<]/g, '').length;
     // A field starting with a filler and holding only fillers and stray Ks is empty.
     const allFiller =
-      d.name !== 'name' && /^<[<K]*$/.test(value) && fillers > value.length - fillers;
+      d.name !== 'name' && /^<[<KL]*$/.test(value) && fillers > value.length - fillers;
     const run = allFiller ? 0 : value.indexOf(d.name === 'name' ? '<<<' : '<<');
     if (run < 0) continue;
     const tail = value.slice(run);
-    if (!/^[<KXCE]*$/.test(tail) || (d.name !== 'name' && !/^[<K]*$/.test(tail))) continue;
+    if (!/^[<KLXCE]*$/.test(tail) || (d.name !== 'name' && !/^[<KL]*$/.test(tail))) continue;
     const changes: CharChange[] = [];
     for (let i = run; i < value.length; i++) {
       if (value[i] !== '<')
