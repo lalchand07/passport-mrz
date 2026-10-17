@@ -1,0 +1,42 @@
+{
+  "name": "passport-mrz-monorepo",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/core",
+    "packages/ocr",
+    "playground"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "npm run build -w passport-mrz && npm run build -w passport-mrz-ocr",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc -p packages/core --noEmit && tsc -p packages/ocr --noEmit && tsc -p playground --noEmit",
+    "playground:dev": "npm run dev -w playground",
+    "playground:build": "npm run build && npm run build -w playground",
+    "countries": "node scripts/generate-countries.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.6.5",
+    "eslint": "^10.13.0",
+    "fast-check": "^4.10.2",
+    "i18n-iso-countries": "^7.14.0",
+    "playwright-core": "^1.64.1",
+    "prettier": "^3.9.10",
+    "tsup": "^8.5.1",
+    "typescript": "~5.9",
+    "typescript-eslint": "^8.71.2",
+    "vitest": "^4.1.12",
+    "vite": "^6.4.0"
+  },
+  "overrides": {
+    "vite": "$vite"
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "name": "passport-mrz-ocr",
+  "version": "0.1.0",
+  "description": "Optional offline OCR for passport-mrz: find, clean up and read the MRZ in a photo with tesseract.js. Model files are bundled; no network at runtime.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lalchand07/passport-mrz.git",
+    "directory": "packages/ocr"
+  },
+  "scripts": {
+    "build": "tsup",
+    "prepack": "node ../../scripts/copy-docs.mjs ocr && npm run build"
+  },
+  "devDependencies": {
+    "@types/pngjs": "^6.0.5"
+  },
+  "dependencies": {
+    "@tesseract.js-data/eng": "^1.0.0",
+    "jpeg-js": "^0.4.4",
+    "pngjs": "^7.0.0",
+    "tesseract.js": "^7.0.0",
+    "passport-mrz": "^0.1.0"
+  },
+  "exports": {
+    ".": {
+      "node": {
+        "import": {
+          "types": "./dist/node.d.ts",
+          "default": "./dist/node.js"
+        },
+        "require": {
+          "types": "./dist/node.d.cts",
+          "default": "./dist/node.cjs"
+        }
+      },
+      "default": {
+        "import": {
+          "types": "./dist/browser.d.ts",
+          "default": "./dist/browser.js"
+        },
+        "require": {
+          "types": "./dist/browser.d.cts",
+          "default": "./dist/browser.cjs"
+        }
+      }
+    },
+    "./browser": {
+      "import": {
+        "types": "./dist/browser.d.ts",
+        "default": "./dist/browser.js"
+      },
+      "require": {
+        "types": "./dist/browser.d.cts",
+        "default": "./dist/browser.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/node.cjs",
+  "module": "./dist/node.js",
+  "types": "./dist/node.d.ts",
+  "bin": {
+    "passport-mrz-ocr-assets": "./scripts/copy-assets.mjs"
+  },
+  "files": [
+    "dist",
+    "scripts",
+    "README.md",
+    "LICENSE",
+    "DATA_LICENSES.md"
+  ],
+  "keywords": [
+    "mrz",
+    "passport",
+    "ocr",
+    "tesseract",
+    "offline"
+  ]
+}

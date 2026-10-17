@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run build
+      - run: npm run typecheck
+      - run: npm test
+      - name: CLI smoke test
+        run: |
+          node packages/core/dist/cli.js "P<UTOERIKSSON<<ANNA<MARIA<<<<<<<<<<<<<<<<<<<" \
+            "L898902C36UTO7408122F1204159ZE184226B<<<<<10" --compact > /dev/null || test $? -eq 1
+      - name: Check the core has no runtime dependencies
+        run: node -e "const p=require('./packages/core/package.json'); if (p.dependencies && Object.keys(p.dependencies).length) { console.error(p.dependencies); process.exit(1) }"
+      - name: Playground builds
+        run: npm run build -w playground
