@@ -13,7 +13,8 @@
     "directory": "packages/ocr"
   },
   "scripts": {
-    "build": "tsup"
+    "build": "tsup",
+    "prepack": "node ../../scripts/copy-docs.mjs ocr && npm run build"
   },
   "devDependencies": {
     "@types/pngjs": "^6.0.5"

@@ -9,3 +9,6 @@ packages/ocr/bench/out/
 # Never commit passport images or ICAO documents
 *.pdf
 private/
+packages/core/README.md
+packages/*/LICENSE
+packages/*/DATA_LICENSES.md
