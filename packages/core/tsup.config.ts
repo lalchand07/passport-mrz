@@ -1,4 +1,7 @@
+import { readFileSync } from 'node:fs';
 import { defineConfig } from 'tsup';
+
+const { version } = JSON.parse(readFileSync('./package.json', 'utf8')) as { version: string };
 
 export default defineConfig([
   {
@@ -18,5 +21,7 @@ export default defineConfig([
     format: ['esm'],
     target: 'node20',
     banner: { js: '#!/usr/bin/env node' },
+    external: ['passport-mrz-ocr'],
+    define: { __VERSION__: JSON.stringify(version) },
   },
 ]);

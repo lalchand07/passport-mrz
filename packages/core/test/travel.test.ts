@@ -10,7 +10,7 @@ import {
 } from '../src/travel/index.js';
 import { REF, SPECIMENS } from './fixtures.js';
 
-const doc = (overrides: Parameters<typeof generateMrz>[0]['overrides'] = {}) =>
+const doc = (overrides: NonNullable<Parameters<typeof generateMrz>[0]>['overrides'] = {}) =>
   parseMrz(generateMrz({ format: 'TD3', seed: 11, overrides }).lines, { referenceDate: REF });
 
 describe('validForTravel', () => {
