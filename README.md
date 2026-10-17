@@ -191,4 +191,4 @@ Code: [MIT](LICENSE). Bundled and generated data, fonts and models: see [DATA_LI
 
 ## Built by
 
-_Placeholder: Lal Chand / Codic Systems._ ([website](https://codicsystems.com) · [GitHub](https://github.com/lalchand07))
+_Lal Chand / Codic Systems._ ([website](https://codicsystems.com) · [GitHub](https://github.com/lalchand07))
