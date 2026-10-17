@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+.DS_Store
+# OCR assets are copied from node_modules at build time
+playground/public/ocr/
+packages/ocr/bench/out/
+# Never commit passport images or ICAO documents
+*.pdf
+private/

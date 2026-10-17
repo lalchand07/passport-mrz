@@ -1,0 +1,59 @@
+{
+  "name": "passport-mrz",
+  "version": "0.1.0",
+  "description": "Read, validate and correct passport, ID card and visa MRZs (ICAO 9303) with travel checks for agencies. Runs locally, zero dependencies.",
+  "license": "MIT",
+  "type": "module",
+  "keywords": [
+    "mrz",
+    "passport",
+    "icao",
+    "9303",
+    "ocr",
+    "travel",
+    "visa",
+    "umrah",
+    "td1",
+    "td3"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lalchand07/passport-mrz.git",
+    "directory": "packages/core"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./travel": {
+      "import": "./dist/travel.js",
+      "require": "./dist/travel.cjs"
+    },
+    "./generate": {
+      "import": "./dist/generate.js",
+      "require": "./dist/generate.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "passport-mrz": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "DATA_LICENSES.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "prepack": "node ../../scripts/copy-docs.mjs core && npm run build"
+  }
+}

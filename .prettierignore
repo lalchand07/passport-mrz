@@ -1,0 +1,5 @@
+dist
+node_modules
+playground/public/ocr
+package-lock.json
+coverage
