@@ -4,7 +4,8 @@
   "type": "module",
   "workspaces": [
     "packages/core",
-    "packages/ocr"
+    "packages/ocr",
+    "playground"
   ],
   "engines": {
     "node": ">=20"

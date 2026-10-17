@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!--CSP-->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>passport-mrz playground</title>
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div class="wrap">
+        <h1>passport-mrz <span class="badge">beta</span></h1>
+        <p class="lead">
+          Read and check the machine-readable zone of passports, ID cards and visas, with travel
+          checks for agencies.
+        </p>
+        <p class="privacy" role="note">
+          <strong>Your passport data never leaves this device.</strong>
+          Everything runs in this browser tab. The page's security policy blocks all network
+          requests apart from loading its own files, and nothing is stored.
+          <a href="#privacy">How this works</a>
+        </p>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section class="card" aria-labelledby="input-h">
+        <h2 id="input-h">1. MRZ</h2>
+        <label for="mrz" class="sr-only">MRZ text</label>
+        <textarea
+          id="mrz"
+          rows="3"
+          spellcheck="false"
+          autocapitalize="characters"
+          autocomplete="off"
+          placeholder="Paste the 2 or 3 MRZ lines here, e.g.&#10;P&lt;UTOERIKSSON&lt;&lt;ANNA&lt;MARIA&lt;&lt;&lt;…"
+        ></textarea>
+        <div class="row">
+          <label class="button primary">
+            Take photo
+            <input id="camera" type="file" accept="image/*" capture="environment" hidden />
+          </label>
+          <label class="button">
+            Upload image
+            <input id="upload" type="file" accept="image/jpeg,image/png,image/webp" hidden />
+          </label>
+          <button id="sample" type="button" class="button ghost">Try a synthetic sample</button>
+          <button id="clear" type="button" class="button ghost">Clear</button>
+        </div>
+        <p id="ocr-status" class="muted" aria-live="polite"></p>
+        <div id="ocr-report" hidden></div>
+      </section>
+
+      <section class="card" aria-labelledby="travel-h">
+        <h2 id="travel-h">2. Trip</h2>
+        <div class="grid">
+          <label>Travel date <input id="travel-date" type="date" /></label>
+          <label>Return date <input id="return-date" type="date" /></label>
+          <label
+            >Months of validity required
+            <input id="min-months" type="number" min="0" max="24" value="6"
+          /></label>
+          <label
+            >Title for adult women
+            <select id="female-title">
+              <option value="MS">MS</option>
+              <option value="MRS">MRS</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section id="results" class="card" aria-labelledby="results-h" aria-live="polite">
+        <h2 id="results-h">3. Result</h2>
+        <p class="muted">Paste an MRZ or add a photo to see the result.</p>
+      </section>
+
+      <section id="privacy" class="card" aria-labelledby="privacy-h">
+        <h2 id="privacy-h">Privacy</h2>
+        <ul>
+          <li>
+            Parsing, check digits, corrections and travel checks run in JavaScript in this tab.
+          </li>
+          <li>
+            Photos are read with an OCR engine (tesseract.js) and an English model that are served
+            with this page. The OCR runs in a worker inside your browser.
+          </li>
+          <li>
+            A Content-Security-Policy blocks every request to other servers: no analytics, no fonts,
+            no CDNs, no uploads. You can check it in your browser's developer tools.
+          </li>
+          <li>
+            Nothing is saved: no cookies, no local storage. Closing the tab forgets everything.
+          </li>
+          <li>Use the "Try a synthetic sample" button to test with invented data.</li>
+        </ul>
+        <p class="muted">
+          The MRZ layouts were written from general knowledge of ICAO Doc 9303 and have not yet been
+          verified against the official text, so all formats are marked beta.
+        </p>
+      </section>
+    </main>
+    <footer class="wrap muted">
+      <p>
+        Open source (MIT). <a href="https://github.com/lalchand07/passport-mrz">Source code</a>.
+      </p>
+    </footer>
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>

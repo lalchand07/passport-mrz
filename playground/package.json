@@ -1,0 +1,16 @@
+{
+  "name": "passport-mrz-playground",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "assets": "node ../packages/ocr/scripts/copy-assets.mjs public/ocr",
+    "dev": "npm run assets && vite",
+    "build": "npm run assets && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "passport-mrz": "^0.1.0",
+    "passport-mrz-ocr": "^0.1.0"
+  }
+}
