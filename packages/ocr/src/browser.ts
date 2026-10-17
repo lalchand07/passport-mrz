@@ -14,7 +14,12 @@ export function createBrowserEngine(
 ): Promise<OcrEngine> {
   const base = new URL(assetsUrl.replace(/\/?$/, '/'), globalThis.location?.href).href;
   return createTesseractEngine(
-    { workerPath: `${base}worker.min.js`, corePath: `${base}core`, langPath: `${base}lang` },
+    {
+      workerPath: `${base}worker.min.js`,
+      corePath: `${base}core`,
+      langPath: `${base}lang`,
+      workerBlobURL: true,
+    },
     options,
   );
 }

@@ -13,6 +13,11 @@ export interface TesseractPaths {
   corePath?: string;
   /** URL of tesseract.js `worker.min.js` (browser), or undefined in Node. */
   workerPath?: string;
+  /**
+   * Start the worker from a blob: URL. In browsers this makes the worker inherit the page's
+   * Content-Security-Policy, so a policy that blocks network requests applies to OCR too.
+   */
+  workerBlobURL?: boolean;
 }
 
 export interface TesseractEngineOptions {
@@ -45,7 +50,7 @@ export async function createTesseractEngine(
         ...(paths.workerPath ? { workerPath: paths.workerPath } : {}),
         gzip: true,
         cacheMethod: 'none',
-        workerBlobURL: false,
+        workerBlobURL: paths.workerBlobURL ?? false,
         legacyCore: legacy,
         legacyLang: true,
         ...(options.logger ? { logger: options.logger } : {}),
